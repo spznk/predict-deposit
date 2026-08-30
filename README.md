@@ -48,6 +48,16 @@ The classification goal is to predict if the client will subscribe a term deposi
 | [BENCHMARK] Logistic Regression with 'duration' | random_state=987 | 0.9344 | 0.9352 | 0.68 | 0.67 | This model shows much better results, which is expected using 'duration' feature. Though this model can only be used as a benchmark |
 | [BENCHMARK] AutoGluon | presets='high_quality', eval_metric='roc_auc', time_limit=1800 | 0.9772 | 0.9545 | 0.82 | 0.68 | Very high AUROC values and good Recall values. It means there is a potential to create better models manually |
 
+## Model selected
+Overall, the best model is **LGBMClassifier with hyperparameters selection using Hyperopt**.
+It showed following results:
+
+| Model | Hyperparameters | AUROC Train | AUROC Test | Recall Train | Recall Test |
+| --- | --- | --- | --- | --- | --- |
+| LGBMClassifier + Hyperopt | learning_rate=0.2618, min_child_samples=15, num_leaves=22, max_depth=13, min_split_gain=0.4344, subsample=0.8686, colsample_bytree=0.8447, reg_alpha=0.00658, reg_lambda=4.1574, n_estimators=1000, subsample_freq=1 | 0.8235 | 0.8117 | 0.70 | 0.64 |
+
+This model has good AUROC values, doesn't show overfit signs. According to importance of finding all the positive predictions, Recall can be improved via introducing loss function bound to Recall value.
+
 ## Summary
 
 ### What is achieved
