@@ -7,7 +7,7 @@ https://www.kaggle.com/datasets/sahistapatel96/bankadditionalfullcsv
 The data is related to direct marketing campaigns (phone calls) of a Portuguese banking institution.
 The classification goal is to predict if the client will subscribe a term deposit (variable y).
 
-For this task following steps were performed:
+## For this task following steps were performed:
 
 1. Exploratory Data Analysis (EDA)
 2. Feature encoding
@@ -17,7 +17,7 @@ For this task following steps were performed:
 6. Models comparison
 7. Selection of the best performing model.
 
-Models used:
+## Models used:
 
 1. Logistic Regression
 2. k Nearest Neighbours
@@ -26,7 +26,7 @@ Models used:
 5. LightGBM
 6. Autogluon (as a benchmark)
 
-Here is a summary table of models evaluation:
+## Comparison table of models evaluation:
 
 | Model | Hyperparameters | AUROC Train | AUROC Test | Recall Train | Recall Test | Comments |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -47,3 +47,15 @@ Here is a summary table of models evaluation:
 | LGBMClassifier + Hyperopt | learning_rate=0.2618, min_child_samples=15, num_leaves=22, max_depth=13, min_split_gain=0.4344, subsample=0.8686, colsample_bytree=0.8447, reg_alpha=0.00658, reg_lambda=4.1574, n_estimators=1000, subsample_freq=1 | 0.8235 | 0.8117 | 0.70 | 0.64 | Overall the best model. Recall can be improved if needed by business requirements |
 | [BENCHMARK] Logistic Regression with 'duration' | random_state=987 | 0.9344 | 0.9352 | 0.68 | 0.67 | This model shows much better results, which is expected using 'duration' feature. Though this model can only be used as a benchmark |
 | [BENCHMARK] AutoGluon | presets='high_quality', eval_metric='roc_auc', time_limit=1800 | 0.9772 | 0.9545 | 0.82 | 0.68 | Very high AUROC values and good Recall values. It means there is a potential to create better models manually |
+
+## Summary
+
+### What is achieved
+- Data was analyzed and new features created
+- Trained several models with good results
+- Most important features are found
+
+### What can be improved
+- Autogluon model showed very good results, which means manual models can be improved
+- Data can be analyzed more in details, taking into account the best models feature importances
+- Ansemble model can be built using different models which performed best

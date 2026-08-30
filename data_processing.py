@@ -30,15 +30,18 @@ class DataProcessor:
     col_transformer: ColumnTransformer
     classifier: BaseEstimator
 
+    # Define X and y
     def set_X_and_y(self):
         self.X_train = self.train_df[self.input_cols].copy()
         self.y_train = self.train_df[self.target_col].copy()
         self.X_test = self.test_df[self.input_cols].copy()
         self.y_test = self.test_df[self.target_col].copy()
 
+    # Class constructor
     def __init__(self, raw_df, columns_to_drop):
         self.input_cols = raw_df.columns.drop(columns_to_drop).to_list()
 
+        # Split to train and test
         train_df, test_df = train_test_split(
             raw_df,
             test_size=0.2,
@@ -46,15 +49,18 @@ class DataProcessor:
             random_state=15
         )
 
+        # Transform target values to 1 and 0
         target_map = {'yes': 1, 'no': 0}
         train_df[self.target_col] = train_df[self.target_col].map(target_map)
         test_df[self.target_col] = test_df[self.target_col].map(target_map)
 
+        # Set class properties
         self.train_df = train_df
         self.test_df = test_df
 
         self.set_X_and_y()
 
+    # Function to divide ages into bins
     def age_cat(self, years):
         if years <= 20:
             return '0-20'
@@ -71,10 +77,12 @@ class DataProcessor:
         elif years >= 61:
             return '61+'
 
+    # Add new column with age ranges
     def add_age_range(self):
         self.X_train['age_range'] = self.X_train['age'].apply(self.age_cat)
         self.X_test['age_range'] = self.X_test['age'].apply(self.age_cat)
 
+    # Add new column for 'campaign' with putting outliers into one bin
     def add_category_for_campaign(self):
         self.X_train['campaign_category'] = [
             str(val)
@@ -102,6 +110,7 @@ class DataProcessor:
             ordered=True
         )
 
+    # Add new column for 'previous' gathering all values >=2 together
     def add_category_for_previous(self):
         self.X_train['previous_category'] = [
             str(val)
@@ -129,6 +138,8 @@ class DataProcessor:
             ordered=True
         )
 
+    # Add new binary column for 'pdays' which eliminates discrepancy
+    # between some 'pdays' and 'previous' values
     def add_binary_for_pdays(self):
         self.X_train['pdays_was_contacted'] = (
             ~((self.X_train['pdays'] == 999) & (self.X_train['previous'] == 0))
@@ -137,6 +148,7 @@ class DataProcessor:
             ~((self.X_test['pdays'] == 999) & (self.X_test['previous'] == 0))
         ).astype(int)
 
+    # Transform columns with 'oject' type to 'category' type
     def transform_objects_to_categories(self):
         features_to_transform = self.X_train.select_dtypes(include=['object']).columns
         self.X_train[features_to_transform] = self.X_train[features_to_transform].astype('category')
@@ -148,6 +160,7 @@ class DataProcessor:
                 self.X_train[cat].cat.categories
             )
 
+    # Redefine input columns and define other types of columns
     def redefine_column_groups(self):
         self.input_cols = self.X_train.columns.to_list()
         self.numeric_cols = self.X_train[self.input_cols].select_dtypes(include='number').columns.to_list()
@@ -160,6 +173,7 @@ class DataProcessor:
             .to_list()
         )
 
+    # Call all the functions which add new columns and redefine column groups
     def add_features(self):
         self.add_age_range()
         self.add_category_for_campaign()
@@ -168,6 +182,8 @@ class DataProcessor:
         self.transform_objects_to_categories()
         self.redefine_column_groups()
 
+    # Create column transformer with possibility to customize
+    # and transform columns in Train and Test
     def transform_columns(self, add_features=True, num_preprocessor=None, cat_preprocessor=None, ord_preprocessor=None):
         if add_features:
             self.add_features()
@@ -202,6 +218,7 @@ class DataProcessor:
         self.X_train = self.col_transformer.fit_transform(self.X_train)
         self.X_test = self.col_transformer.transform(self.X_test)
 
+    # Calculate AUROC and optionally show plot with ROC curve
     @staticmethod
     def get_auroc(target, probas, show_plot=True):
         if type(probas) is pd.DataFrame:
@@ -223,6 +240,8 @@ class DataProcessor:
 
         return auroc
 
+    # Fit classifier, make predictions
+    # and show classification report and AUROC
     def predict_and_show_metrics(self, classifier, **fit_params):
         self.classifier = classifier
 
