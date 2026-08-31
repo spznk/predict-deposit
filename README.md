@@ -46,7 +46,7 @@ The classification goal is to predict if the client will subscribe a term deposi
 | LGBMClassifier + RandomizedSearchCV | subsample=0.76, reg_lambda=5.7, reg_alpha=1.1, num_leaves=46, n_estimators=460, min_split_gain=0.82, min_child_samples=36, max_depth=20, learning_rate=0.03, colsample_bytree=0.85 | 0.8299 | 0.8100 | 0.72 | 0.64 | Good AUROC values and decent Recall, which can be improved by using loss function related to Recall |
 | LGBMClassifier + Hyperopt | learning_rate=0.2618, min_child_samples=15, num_leaves=22, max_depth=13, min_split_gain=0.4344, subsample=0.8686, colsample_bytree=0.8447, reg_alpha=0.00658, reg_lambda=4.1574, n_estimators=1000, subsample_freq=1 | 0.8235 | 0.8117 | 0.70 | 0.64 | Overall the best model. Recall can be improved if needed by business requirements |
 | [BENCHMARK] Logistic Regression with 'duration' | random_state=987 | 0.9344 | 0.9352 | 0.68 | 0.67 | This model shows much better results, which is expected using 'duration' feature. Though this model can only be used as a benchmark |
-| [BENCHMARK] AutoGluon | presets='high_quality', eval_metric='roc_auc', time_limit=1800 | 0.9772 | 0.9545 | 0.82 | 0.68 | Very high AUROC values and good Recall values. It means there is a potential to create better models manually |
+| [BENCHMARK] AutoGluon | presets='high_quality', eval_metric='roc_auc', time_limit=1800 | 0.8625 | 0.8087 | 0.79 | 0.62 | Very good results on Train, but on Test - similar to other models. There might be overfit because of this difference |
 
 ## Model selected
 Overall, the best model is **LGBMClassifier with hyperparameters selection using Hyperopt**.
@@ -66,6 +66,6 @@ This model has good AUROC values, doesn't show overfit signs. According to impor
 - Most important features are found
 
 ### What can be improved
-- Autogluon model showed very good results, which means manual models can be improved
 - Data can be analyzed more in details, taking into account the best models feature importances
 - Ansemble model can be built using different models which performed best
+- Autogluon model can be investigated more in detail to find ways to improve other models
