@@ -224,7 +224,7 @@ class DataProcessor:
         if type(probas) is pd.DataFrame:
             fpr, tpr, thresholds = roc_curve(target, probas['yes'], pos_label='yes')
         else:
-            fpr, tpr, thresholds = roc_curve(target, probas[:, 1], pos_label='yes')
+            fpr, tpr, thresholds = roc_curve(target, probas[:, 1])
 
         if show_plot:
             plt.plot(fpr, tpr)
@@ -248,10 +248,10 @@ class DataProcessor:
         classifier.fit(self.X_train, self.y_train, **fit_params)
 
         train_preds = classifier.predict(self.X_train)
-        val_preds = classifier.predict(self.X_test)
+        test_preds = classifier.predict(self.X_test)
 
         train_probas = classifier.predict_proba(self.X_train)
-        val_probas = classifier.predict_proba(self.X_test)
+        test_probas = classifier.predict_proba(self.X_test)
 
         print('TRAIN')
         print(classification_report(train_preds, self.y_train))
@@ -259,8 +259,8 @@ class DataProcessor:
 
         print('\n------------------------------------------------------\n')
         print('TEST')
-        print(classification_report(val_preds, self.y_test))
-        print('AUROC:', DataProcessor.get_auroc(self.y_test, val_probas))
+        print(classification_report(test_preds, self.y_test))
+        print('AUROC:', DataProcessor.get_auroc(self.y_test, test_probas))
 
     # Objective function for optimization of Booster models
     @staticmethod
@@ -339,7 +339,7 @@ class DataProcessor:
                     algo=tpe.suggest,
                     max_evals=200,
                     trials=trials,
-                    rstate=np.random.default_rng(2026)
+                    rstate=np.random.default_rng(2026), 
                 )
             case _:
                 raise ValueError("Undefined model. Available values are: 'xgb', 'lgb'.")
